@@ -1,0 +1,58 @@
+{
+  "tags": [
+    {
+      "id": "z9prQdvGNaBsfxiR",
+      "name": "massage-therapy"
+    },
+    {
+      "id": "taMs531jy62Jt2Fk",
+      "name": "lead-management"
+    },
+    {
+      "id": "OH1D4XYRfYCZwiVl",
+      "name": "ago"
+    },
+    {
+      "id": "4UEViQBxj7Rkuod0",
+      "name": "Hrand"
+    },
+    {
+      "id": "3umPTRrBHHPfbMIC",
+      "name": "Mator"
+    },
+    {
+      "id": "eDWD8RX4e2hxofl5",
+      "name": "W1: MCP"
+    },
+    {
+      "id": "Q4XZhJRrvtYCD4Xy",
+      "name": "Авто"
+    }
+  ],
+  "mappings": [
+    {
+      "workflowId": "r69tJcIzntHMtPXf",
+      "tagId": "OH1D4XYRfYCZwiVl"
+    },
+    {
+      "workflowId": "qGPrZoBQrmrirfLm",
+      "tagId": "3umPTRrBHHPfbMIC"
+    },
+    {
+      "workflowId": "5L4QvvjdUprkKkRv",
+      "tagId": "3umPTRrBHHPfbMIC"
+    },
+    {
+      "workflowId": "qioUOSd7OLEr1HLZ",
+      "tagId": "3umPTRrBHHPfbMIC"
+    },
+    {
+      "workflowId": "F8OjVq6gHkn7zxA1",
+      "tagId": "eDWD8RX4e2hxofl5"
+    },
+    {
+      "workflowId": "eOtIx1PEa8i0EQO9",
+      "tagId": "OH1D4XYRfYCZwiVl"
+    }
+  ]
+}
