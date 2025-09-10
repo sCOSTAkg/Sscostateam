@@ -266,32 +266,17 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "3c2fa4f9-079c-4729-9737-66ce8f42029f",
-              "name": "message",
-              "type": "string",
-              "value": "={{ $json.message }}"
-            },
-            {
-              "id": "b6e57068-8ece-4725-b07d-1b00069943b0",
-              "name": "chat_id",
-              "type": "string",
-              "value": "={{ $json.chat_id }}"
-            }
-          ]
-        },
+        "workflowId": "Y6uBXrtNCR9EuhIH",
         "options": {}
       },
       "id": "0b55c686-11cc-490d-8dc1-bf3193f895eb",
       "name": "Normalize input",
-      "type": "n8n-nodes-base.set",
+      "type": "n8n-nodes-base.executeWorkflow",
       "position": [
         1216,
         320
       ],
-      "typeVersion": 3.4
+      "typeVersion": 1
     },
     {
       "parameters": {
@@ -498,26 +483,17 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "3910fd43-ebb8-4336-a388-d8fc57c3dc2f",
-              "name": "context",
-              "value": "={{ $json.context }}",
-              "type": "string"
-            }
-          ]
-        },
+        "workflowId": "Y6uBXrtNCR9EuhIH",
         "options": {}
       },
       "id": "a4e1f88e-d8bd-4f1b-830b-50ef328bf230",
       "name": "Normalize input1",
-      "type": "n8n-nodes-base.set",
+      "type": "n8n-nodes-base.executeWorkflow",
       "position": [
         1216,
         -144
       ],
-      "typeVersion": 3.4,
+      "typeVersion": 1,
       "alwaysOutputData": true
     },
     {
