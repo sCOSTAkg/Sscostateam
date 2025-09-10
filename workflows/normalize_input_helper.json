@@ -1,0 +1,69 @@
+{
+  "id": "Y6uBXrtNCR9EuhIH",
+  "name": "Normalize Input Helper",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "ba41744b-3949-4963-b952-bd6e7648e0d1",
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3c2fa4f9-079c-4729-9737-66ce8f42029f",
+              "name": "message",
+              "value": "={{ $json.message }}",
+              "type": "string"
+            },
+            {
+              "id": "b6e57068-8ece-4725-b07d-1b00069943b0",
+              "name": "chat_id",
+              "value": "={{ $json.chat_id }}",
+              "type": "string"
+            },
+            {
+              "id": "3910fd43-ebb8-4336-a388-d8fc57c3dc2f",
+              "name": "context",
+              "value": "={{ $json.context }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "aace6eb8-97c1-4a60-82b8-f43aa7d98ded",
+      "name": "Set Normalized",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        460,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Set Normalized",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "pinData": {},
+  "tags": []
+}
