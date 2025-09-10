@@ -63,6 +63,24 @@
     },
     {
       "parameters": {
+        "method": "GET",
+        "url": "https://api.getzep.com/api/v1/thread/m_{{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "options": {
+          "fullResponse": true,
+          "ignoreResponseCode": true
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        704,
+        -224
+      ],
+      "id": "14c6b292-6fc9-4157-a352-d485b8576701",
+      "name": "Check thread"
+    },
+    {
+      "parameters": {
         "assignments": {
           "assignments": [
             {
@@ -561,51 +579,27 @@
           "conditions": [
             {
               "id": "73e0be10-540e-43bb-8b17-9b9ceb5c221b",
-              "leftValue": "={{ $json.error }}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "exists",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        992,
-        -640
-      ],
-      "id": "8595a8bc-6918-4813-a77d-7a7e7e13956f",
-      "name": "If"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        1872,
-        -640
-      ],
-      "id": "37a82a3d-6794-48cf-9e48-569855a339c8",
-      "name": "Loop Over Items"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "name": "Replace Me",
-      "typeVersion": 1,
-      "position": [
-        2352,
-        -640
-      ],
-      "id": "f3ea233f-646a-48d5-a14e-28adf0b2db06"
+          "leftValue": "={{ $json.statusCode }}",
+          "rightValue": 200,
+        "operator": {
+          "type": "number",
+          "operation": "equal",
+          "singleValue": true
+        }
+      }
+    ],
+    "combinator": "and"
+  },
+  "options": {}
+},
+"type": "n8n-nodes-base.if",
+"typeVersion": 2.2,
+"position": [
+  992,
+  -640
+],
+"id": "8595a8bc-6918-4813-a77d-7a7e7e13956f",
+"name": "If"
     },
     {
       "parameters": {
@@ -897,11 +891,6 @@
             "node": "Normalize input1",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -910,7 +899,18 @@
       "main": [
         [
           {
-            "node": "Get user context from thread",
+            "node": "Check thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check thread": {
+      "main": [
+        [
+          {
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -954,24 +954,6 @@
       "main": [
         [
           {
-            "node": "Add a user",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Normalize input1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Items": {
-      "main": [
-        [
-          {
             "node": "Get user context from thread",
             "type": "main",
             "index": 0
@@ -979,18 +961,7 @@
         ],
         [
           {
-            "node": "Replace Me",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Replace Me": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
+            "node": "Add a user",
             "type": "main",
             "index": 0
           }
@@ -1001,7 +972,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "Get user context from thread",
             "type": "main",
             "index": 0
           }
