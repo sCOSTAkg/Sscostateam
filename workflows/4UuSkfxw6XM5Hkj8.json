@@ -1,0 +1,1255 @@
+{
+  "id": "4UuSkfxw6XM5Hkj8",
+  "name": "Osnovnoy",
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "f6b78b6c-875a-488d-8055-37cec1105cc4",
+      "name": "Send a text message",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1200,
+        800
+      ],
+      "webhookId": "1ad49e91-7894-4fb1-ba93-73ba3ec4e666",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "FYXmO1xALdoIYGZ3",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $json.message.chat.id }}"
+      },
+      "id": "e973a61b-f7ee-4462-842e-2e14c978ba22",
+      "name": "Typing…",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        -448,
+        464
+      ],
+      "webhookId": "b768e407-5f22-4b80-a8a9-2d255b9bf815",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "FYXmO1xALdoIYGZ3",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d8935452-fe20-469d-a68d-1aad056cb8dd",
+              "name": "message",
+              "type": "string",
+              "value": "=Voice message description:{{ $json.candidates?.[0]?.content?.parts?.[0]?.text || $json.content?.parts?.[0]?.text }}"
+            },
+            {
+              "id": "93f1bba1-1180-404a-93ca-c34cf1d1b7ac",
+              "name": "chat_id",
+              "type": "string",
+              "value": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "456c2f51-1cd1-423b-b36e-1a7ce590b577",
+      "name": "get_message (Audio/Video message)",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        0,
+        1040
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-2.5-pro",
+          "cachedResultName": "models/gemini-2.5-pro"
+        },
+        "inputType": "binary",
+        "options": {}
+      },
+      "id": "cb82c68a-12bf-484b-adb6-579a0803fa0b",
+      "name": "Analyze voice message",
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "position": [
+        -224,
+        1040
+      ],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "j20KOsiE2TUYNeTR",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "801ec600-22ad-4a94-a2b4-ae72eb271df0",
+              "name": "message",
+              "type": "string",
+              "value": "={{ $('Telegram Trigger').item.json.message.text }}"
+            },
+            {
+              "id": "263071fb-bcdf-42b0-bb46-71b75fa0bf2a",
+              "name": "chat_id",
+              "type": "string",
+              "value": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "f365f86d-9978-47b6-8cdf-41a8530ca333",
+      "name": "get_message (text)",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        0,
+        848
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "fcb767ee-565e-4b56-a54e-6f97f739fc24",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.text }}",
+                    "rightValue": ""
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "c1016c40-f8f2-4e08-8ec8-5cdb88f5c87a",
+                    "operator": {
+                      "type": "object",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "leftValue": "={{ $('Telegram Trigger').item.json.message.voice }}",
+                    "rightValue": ""
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Voice Message"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "ignoreCase": false,
+          "allMatchingOutputs": true
+        }
+      },
+      "id": "eaeb1f16-f3e4-4231-99c9-6089b5861942",
+      "name": "Input Message Router1",
+      "type": "n8n-nodes-base.switch",
+      "position": [
+        -672,
+        928
+      ],
+      "typeVersion": 3.2
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $('Telegram Trigger').item.json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "id": "9419f343-3937-4b9e-b474-d871bdab842e",
+      "name": "Download Voice Message",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        -448,
+        1040
+      ],
+      "webhookId": "d28e2f59-d662-4e75-8bac-11fdc3fbb295",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "FYXmO1xALdoIYGZ3",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "download": false
+        }
+      },
+      "id": "084beb6d-20c1-4e0a-bb9f-8eed24e783aa",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "position": [
+        -896,
+        704
+      ],
+      "webhookId": "1aecee74-ba0f-4fe2-a302-578312187154",
+      "typeVersion": 1.2,
+      "credentials": {
+        "telegramApi": {
+          "id": "FYXmO1xALdoIYGZ3",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3c2fa4f9-079c-4729-9737-66ce8f42029f",
+              "name": "message",
+              "type": "string",
+              "value": "={{ $json.message }}"
+            },
+            {
+              "id": "b6e57068-8ece-4725-b07d-1b00069943b0",
+              "name": "chat_id",
+              "type": "string",
+              "value": "={{ $json.chat_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "47cb20ac-e98d-45f5-a07d-ac5feb59c7d5",
+      "name": "Normalize input",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        224,
+        1008
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d8935452-fe20-469d-a68d-1aad056cb8dd",
+              "name": "message",
+              "type": "string",
+              "value": "=It was not possible to process the file.File type not supported."
+            },
+            {
+              "id": "38ba2498-2141-4a04-a22a-64563fe2ee6f",
+              "name": "chat_id",
+              "type": "string",
+              "value": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c9634267-ee43-4cc5-9dfa-fc4f23bcdbc8",
+      "name": "get_error_message",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        0,
+        1232
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=История клиента:\n{{ $('Normalize input1').item.json.context }}\nНовое сообщение клиента:\n{{ $('Normalize input').item.json.message }}",
+        "options": {
+          "systemMessage": "=Ты — виртуальный консультант агентства MONSTER DBA (https://monstrcorp.com).\nАгентство 15 лет помогает компаниям в маркетинге, брендинге и digital.\nВ штате 40+ специалистов, готовых строить долгосрочные связи с клиентами, сотрудниками и партнёрами.\n\nЗадача — провести потенциального клиента по всему циклу продаж:\n\n1. **Приветствие и раппорт**  \n   • Представься, уточни контекст запроса, поддерживай дружелюбный, естественный тон.  \n   • Отзеркали стиль клиента, избегай шаблонов и канцеляризма.\n\n2. **Выявление потребностей**  \n   • Вопросами выясни цели, бюджет, сроки, текущие инструменты и критерии успеха.  \n   • Перефразируй услышанное, чтобы подтвердить понимание.\n\n3. **Презентация решения**  \n   • Соотнеси потребности клиента с услугами MONSTER DBA.  \n   • Подчеркни 15‑летний опыт, кейсы и экспертность команды из 40+ digital‑специалистов.\n\n4. **Работа с возражениями**  \n   • Отвечай честно и по сути, опираясь на реальный опыт и данные компании.  \n   • Предлагай альтернативы или дополнительные материалы.\n\n5. **Закрытие сделки**  \n   • Предложи следующий шаг:  \n     – звонок **+996 509 711 811**;  \n     – письмо на **sales@monstrcorp.com**;  \n     – форму на сайте https://www.monstrcorp.com/#form.  \n   • Зафиксируй выбранный канал и сроки.\n\n6. **Фоллоу‑ап**  \n   • Если клиент не ответил, вежливо напомни о договорённости и предложи помощь.\n\nОбщие требования:  \n• Всегда учитывай предыдущие сообщения и контекст.  \n• Отвечай на русском, коротко, но информативно.  \n• Не давай нереалистичных обещаний.  \n• Завершай диалог только после чёткого следующего шага.\n",
+          "returnIntermediateSteps": true,
+          "passthroughBinaryImages": true,
+          "batching": {
+            "batchSize": 1
+          }
+        }
+      },
+      "id": "7e2969a3-4416-4794-b138-aee809ea820a",
+      "name": "Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [
+        704,
+        528
+      ],
+      "typeVersion": 2.1,
+      "executeOnce": true,
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "description": "Вся информация о компании",
+        "topK": 5
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        800,
+        752
+      ],
+      "id": "29335269-7874-4535-9a1e-ec8c00901dd9",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        992,
+        960
+      ],
+      "id": "f911f9d2-896a-44bc-a1ea-040c71c25e65",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "j20KOsiE2TUYNeTR",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "memoryKey": {
+          "__rl": true,
+          "mode": "list",
+          "value": "vector_store_key"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.2,
+      "position": [
+        704,
+        960
+      ],
+      "id": "f4bd68ad-c76f-4ad6-96fb-6604c69ccf00",
+      "name": "Query Data Tool"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        784,
+        1168
+      ],
+      "id": "97241bba-9895-423f-8546-387e9926f367",
+      "name": "Embeddings Google Gemini1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "j20KOsiE2TUYNeTR",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-4.1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        672,
+        752
+      ],
+      "id": "445c81fc-3a22-4128-80f4-8ef9b24d0717",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "cYXfYtnOmdygmbZM",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "getUserContext",
+        "threadId": "=m_{{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "minRating": 0.8
+      },
+      "type": "n8n-nodes-zep.zep",
+      "typeVersion": 1,
+      "position": [
+        -224,
+        464
+      ],
+      "id": "e40b58cb-c6e1-4a5a-abfa-44a70abd9890",
+      "name": "Get user context from thread",
+      "alwaysOutputData": true,
+      "credentials": {
+        "zepApi": {
+          "id": "oNCTCKQnYJtOxVpA",
+          "name": "Zep Api account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://data.widgets.d-novation.com/api/webhook/32485122/e34b6f2a5f370f8027c21b729b4f25d2cd75c40cd8dc7eb2d486b659f528a587",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "CONTEXT",
+              "value": "={{ $json.messages }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1648,
+        992
+      ],
+      "id": "3e80514d-0958-43a5-b709-5d289dad5e3d",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        448,
+        512
+      ],
+      "id": "56b4bf3c-61b4-4ab2-aa6f-14597b15688d",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3910fd43-ebb8-4336-a388-d8fc57c3dc2f",
+              "name": "context",
+              "value": "={{ $json.context }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7208e872-0a62-48b2-bfe7-0a753f9bee93",
+      "name": "Normalize input1",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        224,
+        512
+      ],
+      "typeVersion": 3.4,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "addMessages",
+        "threadId": "=m_{{ $('Normalize input').item.json.chat_id }}",
+        "messages": {
+          "messageValues": [
+            {
+              "role": "=user",
+              "content": "={{ $('Normalize input').item.json.message }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-zep.zep",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        992
+      ],
+      "id": "0842397b-e87c-42e3-8c17-62dc3d9cbdd0",
+      "name": "Add messages to thread",
+      "credentials": {
+        "zepApi": {
+          "id": "oNCTCKQnYJtOxVpA",
+          "name": "Zep Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "73e0be10-540e-43bb-8b17-9b9ceb5c221b",
+              "leftValue": "={{ $json.error }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d8f68728-1a4c-4d49-ac42-35c59862b9ac",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        832,
+        0
+      ],
+      "id": "f8766b31-cc87-406b-aa03-d61393f67e9a",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        1200,
+        0
+      ],
+      "id": "85a17a73-7cff-4bf3-b6b4-6065873f79a8"
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "create",
+        "userId": "=m_{{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "threadId": "=m_{{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "n8n-nodes-zep.zep",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "17143503-0c94-4567-a1ca-5f6ed0ad70f3",
+      "name": "Create a thread",
+      "credentials": {
+        "zepApi": {
+          "id": "oNCTCKQnYJtOxVpA",
+          "name": "Zep Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "thread",
+        "operation": "getMessages",
+        "threadId": "=m_{{ $('Normalize input').item.json.chat_id }}",
+        "limit": 1
+      },
+      "type": "n8n-nodes-zep.zep",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        992
+      ],
+      "id": "bea11c52-98ae-4c31-8291-e88c60056093",
+      "name": "Get thread messages",
+      "credentials": {
+        "zepApi": {
+          "id": "oNCTCKQnYJtOxVpA",
+          "name": "Zep Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $('Normalize input').item.json.chat_id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1200,
+        608
+      ],
+      "id": "d9cfd1bd-04cf-462d-b308-b601d09868df",
+      "name": "Send a chat action",
+      "webhookId": "5b6f8295-b7fc-442e-9219-00b962a5cdf6",
+      "credentials": {
+        "telegramApi": {
+          "id": "GJDbtkEG41MLPOQh",
+          "name": "Финбот"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "userId": "=m_{{ $('Telegram Trigger').item.json.message.chat.id}}"
+      },
+      "type": "n8n-nodes-zep.zep",
+      "typeVersion": 1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "96e144c5-df52-4bc8-a066-bd9f4896c241",
+      "name": "Add a user",
+      "alwaysOutputData": true,
+      "credentials": {
+        "zepApi": {
+          "id": "oNCTCKQnYJtOxVpA",
+          "name": "Zep Api account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "split-message",
+              "name": "messages",
+              "type": "string",
+              "value": "{{(() => {\n  const text = $json.output || $json.message;\n  const maxLen = 400;\n  let parts = [];\n\n  // Сначала режем по абзацам\n  let chunks = text.split(/\\n\\n+/);\n\n  for (let chunk of chunks) {\n    if (chunk.length <= maxLen) {\n      parts.push(chunk);\n    } else {\n      // Если слишком длинный абзац, режем по предложениям\n      let sentences = chunk.split(/(?<=[.!?])\\s+/);\n      let current = \"\";\n      for (let s of sentences) {\n        if ((current + \" \" + s).length > maxLen) {\n          parts.push(current.trim());\n          current = s;\n        } else {\n          current += \" \" + s;\n        }\n      }\n      if (current.trim()) parts.push(current.trim());\n    }\n  }\n  return parts;\n})()}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1c527ff-10aa-4516-a205-8838d532a381",
+      "name": "Split message into chunks",
+      "type": "n8n-nodes-base.set",
+      "position": [
+        1200,
+        416
+      ],
+      "typeVersion": 3.4
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "5e8f9b3a-9855-41b1-ae51-48f9d16a2caf",
+      "name": "SplitInBatches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "position": [
+        1424,
+        416
+      ],
+      "typeVersion": 3
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.messages }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "fb5c95d8-a10e-4b1b-b912-454977e5a6d9",
+      "name": "Send chunk message",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        2096,
+        416
+      ],
+      "typeVersion": 1.2,
+      "webhookId": "4d85dc71-60ef-4a80-9e40-1fe0b7af9d84",
+      "credentials": {
+        "telegramApi": {
+          "id": "FYXmO1xALdoIYGZ3",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "id": "e840eeb5-32d3-4c34-b873-e192bf9943c7",
+      "name": "Typing before chunk",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1648,
+        416
+      ],
+      "typeVersion": 1.2,
+      "webhookId": "67e36491-2376-4e43-881d-9e92b8db2497",
+      "credentials": {
+        "telegramApi": {
+          "id": "FYXmO1xALdoIYGZ3",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "6ce3ca01-8267-444e-ac0b-8c6acb31edcc",
+      "name": "Wait before sending",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        1872,
+        416
+      ],
+      "typeVersion": 1,
+      "webhookId": "f64b5a98-6780-4e30-9ef1-9553e65b19c5"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Выберите удобный вариант для связи 👇",
+        "additionalFields": {}
+      },
+      "id": "4bde5058-e383-42db-a5bc-1ce5e8531490",
+      "name": "Send CTA buttons",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        2320,
+        416
+      ],
+      "typeVersion": 1.2,
+      "webhookId": "e729cf84-bc47-4f99-9a9e-c604971fdcab",
+      "credentials": {
+        "telegramApi": {
+          "id": "FYXmO1xALdoIYGZ3",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "73e7528b-182f-4317-906c-bae1500b1fe2",
+      "name": "Wait 24h",
+      "type": "n8n-nodes-base.wait",
+      "position": [
+        2544,
+        416
+      ],
+      "typeVersion": 1,
+      "webhookId": "105074ab-a1e5-4434-81d2-7c88d21fb929"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Привет 👋! Мы договаривались обсудить детали. Тебе всё ещё актуально?",
+        "additionalFields": {}
+      },
+      "id": "44342665-8e02-4d2d-a729-a4b8e8a83dbc",
+      "name": "Send follow-up",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        2768,
+        416
+      ],
+      "typeVersion": 1.2,
+      "webhookId": "20a65ece-3cdf-4ac2-8096-2ca46b1b86bb",
+      "credentials": {
+        "telegramApi": {
+          "id": "FYXmO1xALdoIYGZ3",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Agent": {
+      "main": [
+        [
+          {
+            "node": "Add messages to thread",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a chat action",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Split message into chunks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize input": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Input Message Router1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Typing…",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_error_message": {
+      "main": [
+        [
+          {
+            "node": "Normalize input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_message (text)": {
+      "main": [
+        [
+          {
+            "node": "Normalize input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze voice message": {
+      "main": [
+        [
+          {
+            "node": "get_message (Audio/Video message)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input Message Router1": {
+      "main": [
+        [
+          {
+            "node": "get_message (text)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download Voice Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get_error_message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Voice Message": {
+      "main": [
+        [
+          {
+            "node": "Analyze voice message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_message (Audio/Video message)": {
+      "main": [
+        [
+          {
+            "node": "Normalize input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Data Tool": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Query Data Tool",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get user context from thread": {
+      "main": [
+        [
+          {
+            "node": "Normalize input1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Typing…": {
+      "main": [
+        [
+          {
+            "node": "Get user context from thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize input1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add messages to thread": {
+      "main": [
+        [
+          {
+            "node": "Get thread messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Add a user",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normalize input1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Get user context from thread",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a thread": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get thread messages": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add a user": {
+      "main": [
+        [
+          {
+            "node": "Create a thread",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split message into chunks": {
+      "main": [
+        [
+          {
+            "node": "SplitInBatches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SplitInBatches": {
+      "main": [
+        [
+          {
+            "node": "Typing before chunk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Typing before chunk": {
+      "main": [
+        [
+          {
+            "node": "Wait before sending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait before sending": {
+      "main": [
+        [
+          {
+            "node": "Send chunk message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send chunk message": {
+      "main": [
+        [
+          {
+            "node": "Send CTA buttons",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send CTA buttons": {
+      "main": [
+        [
+          {
+            "node": "Wait 24h",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 24h": {
+      "main": [
+        [
+          {
+            "node": "Send follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "triggerCount": 0,
+  "versionId": "377e9209-a7ba-49ca-a357-4482a1852d51",
+  "owner": {
+    "type": "personal",
+    "projectId": "dvppI3gHKpO1rcWe",
+    "projectName": "Sallahadin  Sali <withabakirov@gmail.com>",
+    "personalEmail": "withabakirov@gmail.com"
+  },
+  "parentFolderId": null,
+  "isArchived": false
+}
