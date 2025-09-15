@@ -63,354 +63,231 @@
     },
     {
       "parameters": {
-        "url": "https://scosta.up.railway.app/api/v1/workflows",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "active",
-              "value": "={{ $json.active }}"
-            },
-            {
-              "name": "tags",
-              "value": "={{ $json.tags }}"
-            },
-            {
-              "name": "limit",
-              "value": "={{ $json.limit }}"
-            }
-          ]
-        },
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "X-N8N-API-KEY",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNWNhNmFkMy0xMzI1LTQxZTUtOWM4Mi05YTlhMTRhYWMyMmEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU3OTU1ODg1fQ.J1etn4ediWLXWi-TLZ8bwvn1epgJgaMZ54KlJDL8BI4"
-            }
-          ]
-        },
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json"
-            }
-          }
+        "resource": "workflow",
+        "operation": "getAll",
+        "returnAll": "={{ $json.limit ? false : true }}",
+        "limit": "={{ $json.limit ?? 100 }}",
+        "filters": {
+          "activeWorkflows": "={{ $json.active === undefined ? undefined : $json.active }}",
+          "tags": "={{ Array.isArray($json.tags) ? $json.tags.join(',') : ($json.tags || undefined) }}"
         }
       },
       "id": "list_workflows",
       "name": "List Workflows",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "n8n-nodes-base.n8n",
       "position": [
         704,
         112
       ],
-      "typeVersion": 4.2
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "XlwmzDj0b1cEw8V2",
+          "name": "HTTP Header Auth"
+        }
+      }
     },
     {
       "parameters": {
-        "url": "=https://scosta.up.railway.app/api/v1/workflows/{{ $json.workflowId }}",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "X-N8N-API-KEY",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNWNhNmFkMy0xMzI1LTQxZTUtOWM4Mi05YTlhMTRhYWMyMmEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU3OTU1ODg1fQ.J1etn4ediWLXWi-TLZ8bwvn1epgJgaMZ54KlJDL8BI4"
-            }
-          ]
-        },
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json"
-            }
-          }
+        "resource": "workflow",
+        "operation": "get",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.workflowId }}"
         }
       },
       "id": "get_workflow",
       "name": "Get Workflow",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "n8n-nodes-base.n8n",
       "position": [
         704,
         224
       ],
-      "typeVersion": 4.2
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "XlwmzDj0b1cEw8V2",
+          "name": "HTTP Header Auth"
+        }
+      }
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://scosta.up.railway.app/api/v1/workflows",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "X-N8N-API-KEY",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNWNhNmFkMy0xMzI1LTQxZTUtOWM4Mi05YTlhMTRhYWMyMmEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU3OTU1ODg1fQ.J1etn4ediWLXWi-TLZ8bwvn1epgJgaMZ54KlJDL8BI4"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "value": "={{ JSON.stringify($json.workflow) }}"
-            }
-          ]
-        },
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json"
-            }
-          }
-        }
+        "resource": "workflow",
+        "operation": "create",
+        "workflowObject": "={{ JSON.stringify($json.workflow || {}) }}"
       },
       "id": "create_workflow",
       "name": "Create Workflow",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "n8n-nodes-base.n8n",
       "position": [
         704,
         352
       ],
-      "typeVersion": 4.2
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "XlwmzDj0b1cEw8V2",
+          "name": "HTTP Header Auth"
+        }
+      }
     },
     {
       "parameters": {
-        "method": "PATCH",
-        "url": "=https://scosta.up.railway.app/api/v1/workflows/{{ $json.workflowId }}",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "X-N8N-API-KEY",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNWNhNmFkMy0xMzI1LTQxZTUtOWM4Mi05YTlhMTRhYWMyMmEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU3OTU1ODg1fQ.J1etn4ediWLXWi-TLZ8bwvn1epgJgaMZ54KlJDL8BI4"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
+        "resource": "workflow",
+        "operation": "update",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.workflowId }}"
         },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "value": "={{ JSON.stringify($json.updates) }}"
-            }
-          ]
-        },
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json"
-            }
-          }
-        }
+        "workflowObject": "={{ JSON.stringify($json.updates || {}) }}"
       },
       "id": "update_workflow",
       "name": "Update Workflow",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "n8n-nodes-base.n8n",
       "position": [
         704,
         464
       ],
-      "typeVersion": 4.2
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "XlwmzDj0b1cEw8V2",
+          "name": "HTTP Header Auth"
+        }
+      }
     },
     {
       "parameters": {
-        "method": "DELETE",
-        "url": "=https://scosta.up.railway.app/api/v1/workflows/{{ $json.workflowId }}",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "X-N8N-API-KEY",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNWNhNmFkMy0xMzI1LTQxZTUtOWM4Mi05YTlhMTRhYWMyMmEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU3OTU1ODg1fQ.J1etn4ediWLXWi-TLZ8bwvn1epgJgaMZ54KlJDL8BI4"
-            }
-          ]
-        },
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json"
-            }
-          }
+        "resource": "workflow",
+        "operation": "delete",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.workflowId }}"
         }
       },
       "id": "delete_workflow",
       "name": "Delete Workflow",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "n8n-nodes-base.n8n",
       "position": [
         704,
         592
       ],
-      "typeVersion": 4.2
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "XlwmzDj0b1cEw8V2",
+          "name": "HTTP Header Auth"
+        }
+      }
     },
     {
       "parameters": {
-        "method": "PATCH",
-        "url": "=https://scosta.up.railway.app/api/v1/workflows/{{ $json.workflowId }}/activate",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "X-N8N-API-KEY",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNWNhNmFkMy0xMzI1LTQxZTUtOWM4Mi05YTlhMTRhYWMyMmEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU3OTU1ODg1fQ.J1etn4ediWLXWi-TLZ8bwvn1epgJgaMZ54KlJDL8BI4"
-            }
-          ]
-        },
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json"
-            }
-          }
+        "resource": "workflow",
+        "operation": "activate",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.workflowId }}"
         }
       },
       "id": "activate_workflow",
       "name": "Activate Workflow",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "n8n-nodes-base.n8n",
       "position": [
         704,
         704
       ],
-      "typeVersion": 4.2
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "XlwmzDj0b1cEw8V2",
+          "name": "HTTP Header Auth"
+        }
+      }
     },
     {
       "parameters": {
-        "method": "PATCH",
-        "url": "=https://scosta.up.railway.app/api/v1/workflows/{{ $json.workflowId }}/deactivate",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "X-N8N-API-KEY",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNWNhNmFkMy0xMzI1LTQxZTUtOWM4Mi05YTlhMTRhYWMyMmEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU3OTU1ODg1fQ.J1etn4ediWLXWi-TLZ8bwvn1epgJgaMZ54KlJDL8BI4"
-            }
-          ]
-        },
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json"
-            }
-          }
+        "resource": "workflow",
+        "operation": "deactivate",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.workflowId }}"
         }
       },
       "id": "deactivate_workflow",
       "name": "Deactivate Workflow",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "n8n-nodes-base.n8n",
       "position": [
         704,
         832
       ],
-      "typeVersion": 4.2
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "XlwmzDj0b1cEw8V2",
+          "name": "HTTP Header Auth"
+        }
+      }
     },
     {
       "parameters": {
-        "url": "https://scosta.up.railway.app/api/v1/executions",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "workflowId",
-              "value": "={{ $json.workflowId }}"
-            },
-            {
-              "name": "limit",
-              "value": "={{ $json.limit }}"
-            }
-          ]
-        },
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "X-N8N-API-KEY",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNWNhNmFkMy0xMzI1LTQxZTUtOWM4Mi05YTlhMTRhYWMyMmEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU3OTU1ODg1fQ.J1etn4ediWLXWi-TLZ8bwvn1epgJgaMZ54KlJDL8BI4"
-            }
-          ]
-        },
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json"
-            }
+        "resource": "execution",
+        "operation": "getAll",
+        "returnAll": "={{ $json.limit ? false : true }}",
+        "limit": "={{ $json.limit ?? 100 }}",
+        "filters": {
+          "workflowId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{ $json.workflowId }}"
           }
         }
       },
       "id": "list_executions",
       "name": "List Executions",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "n8n-nodes-base.n8n",
       "position": [
         704,
         944
       ],
-      "typeVersion": 4.2
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "XlwmzDj0b1cEw8V2",
+          "name": "HTTP Header Auth"
+        }
+      }
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "=https://scosta.up.railway.app/api/v1/workflows/{{ $json.workflowId }}/execute",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "X-N8N-API-KEY",
-              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNWNhNmFkMy0xMzI1LTQxZTUtOWM4Mi05YTlhMTRhYWMyMmEiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU3OTU1ODg1fQ.J1etn4ediWLXWi-TLZ8bwvn1epgJgaMZ54KlJDL8BI4"
-            },
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
+        "resource": "workflow",
+        "operation": "run",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.workflowId }}"
         },
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "value": "={{ JSON.stringify($json.data || {}) }}"
-            }
-          ]
-        },
-        "options": {
-          "response": {
-            "response": {
-              "responseFormat": "json"
-            }
-          }
-        }
+        "data": "={{ JSON.stringify($json.data || {}) }}"
       },
       "id": "execute_workflow",
       "name": "Execute Workflow",
-      "type": "n8n-nodes-base.httpRequest",
+      "type": "n8n-nodes-base.n8n",
       "position": [
         704,
         1072
       ],
-      "typeVersion": 4.2
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "XlwmzDj0b1cEw8V2",
+          "name": "HTTP Header Auth"
+        }
+      }
     }
   ],
   "connections": {
